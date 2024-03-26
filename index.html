@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="index.css" rel="stylesheet" type="text/css" />
+    <title>Eindproject informatica: handschrift herkenning</title>
+</head>
+<body>
+
+<form id='uploaden'>
+    <div class="container">
+        <input type="file" id="bestand" accept=".jpg"></input>
+        <button type="submit">Bevestigen upload</button>
+        <titel>titel</titel>
+        <uitleg>uitleg</uitleg>
+        <div id="afbeelding">afbeelding</div>
+        <div id="invoeren">invoeren</div>
+        <div id="bevestigen">bevestigen</div>
+        <div id="resultaat">resultaat</div>
+        <reclame>reclame</reclame>
+    </div>
+</form>
+
+<script> 
+    document.getElementById('bestand').addEventListener('change', function(e){
+        const afbeeldingVak = document.getElementById('afbeelding');
+        const bestandGebruiker = e.target.files[0];
+
+        // Maak een FileReader object aan om het bestand te lezen
+        const lezer = new FileReader();
+
+        // Wanneer het bestand geladen is, toon het in het afbeelding vak
+        lezer.onload = function(event) {
+            const afbeeldingElement = document.createElement('img');
+            afbeeldingElement.src = event.target.result;
+            afbeeldingVak.innerHTML = '';
+            afbeeldingVak.appendChild(afbeeldingElement);
+        }
+
+        // Lees het bestand als een data URL
+        lezer.readAsDataURL(bestandGebruiker);
+    });
+
+
+    document.getElementById('uploaden').addEventListener('submit', function(e){
+        e.preventDefault();
+
+        const bestandGebruiker= document.getElementById('bestand').files[0];
+
+        const vormData= new FormData();
+        vormData.append('bestand van gebruiker', bestandGebruiker, 'bestand-Gebruiker.jpg');
+
+        fetch('https://httpbin.org/post', {
+            method: "POST",
+            body: vormData,
+        })
+        .then(res=> res.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+    })
+</script>
+
+</body>
+</html>
